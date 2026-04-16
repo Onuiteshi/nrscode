@@ -1,272 +1,337 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NRS State & LGA Lookup — NRS E-Invoicing</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            /* Zoho Signature Palette */
-            --zoho-red: #F0483E;
-            --zoho-blue: #0070D2;
-            --zoho-green: #2DB47D;
-            --zoho-yellow: #F7B500;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NRS State & LGA Lookup — FIRS E-Invoicing</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Zoho Signature Palette */
+    --zoho-red: #F0483E;
+    --zoho-blue: #0070D2;
+    --zoho-green: #2DB47D;
+    --zoho-yellow: #F7B500;
 
-            /* Theme Colors */
-            --bg: #0b0e14;
-            --surface: #151921;
-            --surface-2: #1c222d;
-            --surface-3: #242b38;
-            --border: rgba(255,255,255,0.08);
-            --border-hover: rgba(255,255,255,0.16);
+    --bg: #0b0e14;
+    --surface: #151921;
+    --surface-2: #1c222d;
+    --surface-3: #242b38;
+    --border: rgba(255,255,255,0.08);
+    --border-hover: rgba(255,255,255,0.16);
+    --text-primary: #ffffff;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --accent: var(--zoho-blue);
+    --accent-dim: rgba(0, 112, 210, 0.15);
+    --accent-glow: rgba(0, 112, 210, 0.3);
+    --blue: #38bdf8;
+    --blue-dim: rgba(56, 189, 248, 0.1);
+    --orange: var(--zoho-yellow);
+    --orange-dim: rgba(247, 181, 0, 0.1);
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
 
-            --text-primary: #ffffff;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; display: flex; flex-direction: column; }
 
-            --accent: var(--zoho-blue);
-            --accent-dim: rgba(0, 112, 210, 0.15);
-            --accent-glow: rgba(0, 112, 210, 0.3);
+  header {
+    padding: 24px 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    position: sticky; top: 0; background: rgba(11, 14, 20, 0.8); backdrop-filter: blur(12px); z-index: 10;
+  }
 
-            --blue: #38bdf8;
-            --blue-dim: rgba(56, 189, 248, 0.1);
-            --orange: var(--zoho-yellow);
-            --orange-dim: rgba(247, 181, 0, 0.1);
-            --radius: 8px;
-            --radius-lg: 12px;
-        }
+  .logo-area { display: flex; align-items: center; gap: 14px; }
+  .logo-mark {
+    width: 38px; height: 38px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2px; padding: 2px;
+  }
+  .logo-mark span { border-radius: 2px; }
+  .logo-mark .sq-1 { background: var(--zoho-red); }
+  .logo-mark .sq-2 { background: var(--zoho-blue); }
+  .logo-mark .sq-3 { background: var(--zoho-green); }
+  .logo-mark .sq-4 { background: var(--zoho-yellow); }
 
-        /* ... General Reset & Body ... */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; display: flex; flex-direction: column; }
+  .logo-text h1 { font-size: 16px; font-weight: 600; letter-spacing: -0.3px; }
+  .logo-text p { font-size: 12px; color: var(--text-muted); }
+  .header-badge {
+    font-size: 11px; font-weight: 600; padding: 4px 12px;
+    background: var(--accent-dim); color: var(--accent);
+    border-radius: 4px; border: 1px solid var(--accent-glow);
+  }
 
-        /* ── Header ── */
-        header {
-            padding: 24px 32px;
-            border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: space-between; gap: 16px;
-            position: sticky; top: 0; background: rgba(11, 14, 20, 0.8); backdrop-filter: blur(12px); z-index: 10;
-        }
+  main { flex: 1; max-width: 860px; width: 100%; margin: 0 auto; padding: 28px 24px 48px; display: flex; flex-direction: column; gap: 18px; }
 
-        .logo-area { display: flex; align-items: center; gap: 14px; }
-        .logo-mark {
-            width: 38px; height: 38px;
-            display: grid; grid-template-columns: 1fr 1fr; gap: 2px; padding: 2px;
-        }
-        .logo-mark span { border-radius: 2px; }
-        .logo-mark .sq-1 { background: var(--zoho-red); }
-        .logo-mark .sq-2 { background: var(--zoho-blue); }
-        .logo-mark .sq-3 { background: var(--zoho-green); }
-        .logo-mark .sq-4 { background: var(--zoho-yellow); }
+  /* Steps indicator */
+  .steps { display: flex; align-items: center; gap: 12px; font-size: 12px; color: var(--text-muted); }
+  .step { display: flex; align-items: center; gap: 6px; }
+  .step-num { 
+    width: 22px; height: 22px; border-radius: 4px; border: 1px solid var(--border-hover); 
+    display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; 
+  }
+  .step.active .step-num { background: var(--zoho-blue); border-color: var(--zoho-blue); color: #fff; }
+  .step.done .step-num { background: var(--zoho-green); border-color: var(--zoho-green); color: #fff; }
+  .step.active .step-label { color: var(--text-primary); font-weight: 600; }
+  .step-arrow { color: var(--text-muted); font-size: 14px; opacity: 0.5; }
 
-        .logo-text h1 { font-size: 16px; font-weight: 600; letter-spacing: -0.3px; }
-        .logo-text p { font-size: 12px; color: var(--text-muted); }
-        .header-badge {
-            font-size: 11px; font-weight: 600; padding: 4px 12px;
-            background: var(--accent-dim); color: var(--accent);
-            border-radius: 4px; border: 1px solid var(--accent-glow);
-        }
+  /* State selector */
+  .section-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 8px; }
 
-        /* ── Steps ── */
-        .steps { display: flex; align-items: center; gap: 12px; font-size: 12px; color: var(--text-muted); }
-        .step-num {
-            width: 22px; height: 22px; border-radius: 4px; border: 1px solid var(--border-hover);
-            display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700;
-        }
-        .step.active .step-num { background: var(--zoho-blue); border-color: var(--zoho-blue); color: #fff; }
-        .step.done .step-num { background: var(--zoho-green); border-color: var(--zoho-green); color: #fff; }
-        .step.active .step-label { color: var(--text-primary); font-weight: 600; }
+  .state-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); gap: 8px; max-height: 280px; overflow-y: auto; padding-right: 4px; }
+  .state-grid::-webkit-scrollbar { width: 4px; }
+  .state-grid::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 10px; }
 
-        /* ── State Selector & Grid ── */
-        .state-btn {
-            background: var(--surface); color: var(--text-secondary);
-            border: 1px solid var(--border); border-radius: var(--radius);
-            padding: 10px 12px; transition: all 0.2s;
-        }
-        .state-btn:hover { background: var(--surface-2); border-color: var(--zoho-blue); color: #fff; }
-        .state-btn.selected { background: var(--accent-dim); border-color: var(--zoho-blue); color: var(--zoho-blue); }
+  .state-btn {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius);
+    background: var(--surface); color: var(--text-secondary); font-family: inherit;
+    font-size: 13px; cursor: pointer; transition: all 0.2s; text-align: left; gap: 6px;
+  }
+  .state-btn:hover { background: var(--surface-2); border-color: var(--zoho-blue); color: var(--text-primary); }
+  .state-btn.selected { background: var(--accent-dim); border-color: var(--zoho-blue); color: var(--zoho-blue); }
+  .state-btn .sc { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-muted); flex-shrink: 0; }
+  .state-btn.selected .sc { color: var(--zoho-blue); opacity: 0.8; }
 
-        /* ── Copy Bar ── */
-        .state-code-bar {
-            background: var(--surface); border: 1px solid var(--accent-glow);
-            border-radius: var(--radius); padding: 12px 18px;
-        }
-        .scb-code { color: var(--zoho-blue); font-weight: 700; font-size: 14px; }
-        .scb-copy {
-            background: var(--zoho-blue); color: #fff; border: none;
-            padding: 6px 14px; border-radius: 4px; font-weight: 600;
-        }
-        .scb-copy.copied { background: var(--zoho-green); }
+  /* Copied state code bar */
+  .state-code-bar {
+    display: none; align-items: center; justify-content: space-between;
+    padding: 14px 20px; background: var(--surface); border: 1px solid var(--accent-glow);
+    border-radius: var(--radius); gap: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .state-code-bar.visible { display: flex; }
+  .scb-label { font-size: 13px; color: var(--text-secondary); }
+  .scb-code { font-family: 'DM Mono', monospace; font-size: 15px; color: var(--zoho-blue); font-weight: 700; }
+  .scb-copy { 
+    padding: 8px 16px; font-size: 12px; border: none; border-radius: 4px; 
+    background: var(--zoho-blue); color: #fff; font-weight: 600; cursor: pointer; transition: all 0.2s; 
+  }
+  .scb-copy:hover { background: #005bb2; }
+  .scb-copy.copied { background: var(--zoho-green); }
 
-        /* ── LGA List & Search ── */
-        #lga-search:focus { border-color: var(--zoho-blue); box-shadow: 0 0 0 3px var(--accent-dim); }
-        .lga-code { background: var(--orange-dim); color: var(--zoho-yellow); font-weight: 700; border-radius: 4px; }
-        .lga-row:hover { background: var(--surface-2); }
-        .lga-name em { color: var(--zoho-green); font-weight: 600; background: rgba(45, 180, 125, 0.1); }
+  /* LGA section */
+  .lga-section { display: none; flex-direction: column; gap: 12px; }
+  .lga-section.visible { display: flex; }
 
-        .copy-btn:hover, .copy-btn.copied { background: var(--zoho-blue); color: #fff; border-color: var(--zoho-blue); opacity: 1; }
-        .copy-btn.copied { background: var(--zoho-green); border-color: var(--zoho-green); }
-    </style>
+  .search-wrap { position: relative; }
+  .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-muted); }
+  #lga-search { width: 100%; padding: 12px 44px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text-primary); font-size: 15px; outline: none; transition: all 0.2s; }
+  #lga-search:focus { border-color: var(--zoho-blue); box-shadow: 0 0 0 3px var(--accent-dim); }
+  .clear-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; background: var(--surface-3); border: none; border-radius: 4px; color: var(--text-muted); cursor: pointer; display: none; align-items: center; justify-content: center; }
+  .clear-btn.visible { display: flex; }
+
+  .meta-bar { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--text-muted); }
+
+  .lga-list { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--surface); max-height: 400px; overflow-y: auto; }
+  .lga-list::-webkit-scrollbar { width: 8px; }
+  .lga-list::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 10px; }
+
+  .lga-row { display: flex; align-items: center; gap: 14px; padding: 12px 20px; border-bottom: 1px solid var(--border); transition: background 0.1s; }
+  .lga-row:hover { background: var(--surface-2); }
+  .lga-code { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 700; padding: 4px 10px; background: var(--orange-dim); color: var(--zoho-yellow); border-radius: 4px; min-width: 100px; text-align: center; }
+  .lga-name { flex: 1; font-size: 14px; color: var(--text-primary); }
+  .lga-name em { font-style: normal; color: var(--zoho-green); font-weight: 600; background: rgba(45, 180, 125, 0.1); padding: 0 2px; }
+  .copy-btn { padding: 6px 12px; border: 1px solid var(--border); border-radius: 4px; background: transparent; color: var(--text-secondary); font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; opacity: 0; }
+  .lga-row:hover .copy-btn { opacity: 1; }
+  .copy-btn:hover, .copy-btn.copied { background: var(--zoho-blue); border-color: var(--zoho-blue); color: #fff; }
+  .copy-btn.copied { background: var(--zoho-green); border-color: var(--zoho-green); }
+
+  .state-box { padding: 40px 24px; text-align: center; color: var(--text-muted); }
+  .state-icon.loading { animation: pulse 1.4s ease-in-out infinite; color: var(--zoho-blue); }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+  
+  .footer-note { font-size: 11px; color: var(--text-muted); text-align: center; line-height: 1.8; margin-top: 10px; }
+
+  @media (max-width: 540px) {
+    header { padding: 16px; }
+    main { padding: 18px 14px; }
+    .state-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+    .copy-btn { opacity: 1; }
+  }
+</style>
 </head>
 <body>
 
 <header>
-    <div class="logo-area">
-        <div class="logo-mark">
-            <span class="sq-1"></span>
-            <span class="sq-2"></span>
-            <span class="sq-3"></span>
-            <span class="sq-4"></span>
-        </div>
-        <div class="logo-text">
-            <h1>State & LGA Lookup</h1>
-            <p>NRS e-Invoice Reference</p>
-        </div>
+  <div class="logo-area">
+    <div class="logo-mark">
+      <span class="sq-1"></span>
+      <span class="sq-2"></span>
+      <span class="sq-3"></span>
+      <span class="sq-4"></span>
     </div>
+    <div class="logo-text">
+      <h1>State & LGA Lookup</h1>
+      <p>NRS e-Invoice Reference</p>
+    </div>
+  </div>
+  <span class="header-badge">v1.4 Compliant</span>
 </header>
 
 <main>
-    <div class="steps">
-        <div class="step active" id="step1">
-            <span class="step-num">1</span>
-            <span class="step-label">Select State</span>
-        </div>
-        <span class="step-arrow">›</span>
-        <div class="step" id="step2">
-            <span class="step-num">2</span>
-            <span class="step-label">Copy State Code</span>
-        </div>
-        <span class="step-arrow">›</span>
-        <div class="step" id="step3">
-            <span class="step-num">3</span>
-            <span class="step-label">Find & Copy LGA Code</span>
-        </div>
+  <div class="steps">
+    <div class="step active" id="step1">
+      <span class="step-num">1</span>
+      <span class="step-label">Select State</span>
     </div>
+    <span class="step-arrow">›</span>
+    <div class="step" id="step2">
+      <span class="step-num">2</span>
+      <span class="step-label">Copy State Code</span>
+    </div>
+    <span class="step-arrow">›</span>
+    <div class="step" id="step3">
+      <span class="step-num">3</span>
+      <span class="step-label">Find & Copy LGA Code</span>
+    </div>
+  </div>
 
+  <div>
+    <p class="section-label">Select customer's state</p>
+    <div class="state-grid" id="state-grid">
+      <div class="state-box">
+        <div class="state-icon loading">Loading states...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="state-code-bar" id="state-code-bar">
+    <div class="scb-label">State Code for <strong id="selected-state-name" style="color:white">—</strong></div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span class="scb-code" id="selected-state-code">—</span>
+      <button class="scb-copy" id="copy-state-btn" onclick="copyStateCode()">Copy State Code</button>
+    </div>
+  </div>
+
+  <div class="lga-section" id="lga-section">
+    <div>
+      <p class="section-label">LGAs in <span id="lga-section-title" style="color:white">—</span></p>
+      <div class="search-wrap">
+        <svg class="search-icon" viewBox="0 0 16 16" fill="none">
+          <circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M10.5 10.5L13.5 13.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <input type="text" id="lga-search" placeholder="Search LGA by name..." oninput="onLGASearch()" />
+        <button class="clear-btn" id="clear-btn" onclick="clearLGASearch()">✕</button>
+      </div>
+    </div>
+    <div class="meta-bar">
+      <span id="lga-count">—</span>
+      <span style="font-size:11px;color:var(--text-muted)">Copy LGA code → paste into Zoho customer</span>
+    </div>
+    <div class="lga-list" id="lga-list"></div>
+  </div>
+
+  <p class="footer-note">
+    State Code → <strong>State Code</strong> field &nbsp;·&nbsp; LGA Code → <strong>LGA Code</strong> field
+  </p>
 </main>
 
 <script>
-    let allStates = [];
-    let allLGAs = [];
-    let selectedState = null;
+  /* All logic remains identical to your original code */
+  let allStates = [];
+  let allLGAs = [];
+  let selectedState = null;
 
-    async function loadData() {
-        try {
-            const [statesRes, lgasRes] = await Promise.all([
-                fetch('https://eivc-k6z6d.ondigitalocean.app/api/v1/invoice/resources/states'),
-                fetch('https://eivc-k6z6d.ondigitalocean.app/api/v1/invoice/resources/lgas')
-            ]);
-            const statesJson = await statesRes.json();
-            const lgasJson = await lgasRes.json();
-            allStates = statesJson.data || [];
-            allLGAs = lgasJson.data || [];
-            renderStates();
-        } catch(e) {
-            document.getElementById('state-grid').innerHTML = `<div class="state-box"><p class="state-title" style="color:var(--danger)">Failed to load. Check connection.</p></div>`;
-        }
+  async function loadData() {
+    try {
+      const [statesRes, lgasRes] = await Promise.all([
+        fetch('https://eivc-k6z6d.ondigitalocean.app/api/v1/invoice/resources/states'),
+        fetch('https://eivc-k6z6d.ondigitalocean.app/api/v1/invoice/resources/lgas')
+      ]);
+      const statesJson = await statesRes.json();
+      const lgasJson = await lgasRes.json();
+      allStates = statesJson.data || [];
+      allLGAs = lgasJson.data || [];
+      renderStates();
+    } catch(e) {
+      document.getElementById('state-grid').innerHTML = `<div class="state-box"><p style="color:var(--zoho-red)">Failed to load data.</p></div>`;
     }
+  }
 
-    function renderStates() {
-        document.getElementById('state-grid').innerHTML = allStates.map(s => `
+  function renderStates() {
+    document.getElementById('state-grid').innerHTML = allStates.map(s => `
       <button class="state-btn ${selectedState && selectedState.code === s.code ? 'selected' : ''}"
         onclick="selectState('${s.code}', '${s.name.replace(/'/g,"\\'")}')">
         <span>${s.name}</span>
         <span class="sc">${s.code.replace('NG-','')}</span>
       </button>
     `).join('');
+  }
+
+  function selectState(code, name) {
+    selectedState = { code, name };
+    document.querySelectorAll('.state-btn').forEach(btn => btn.classList.remove('selected'));
+    event.currentTarget.classList.add('selected');
+    document.getElementById('selected-state-name').textContent = name;
+    document.getElementById('selected-state-code').textContent = code;
+    document.getElementById('state-code-bar').classList.add('visible');
+    document.getElementById('step1').classList.remove('active');
+    document.getElementById('step1').classList.add('done');
+    document.getElementById('step2').classList.add('active');
+    document.getElementById('lga-section-title').textContent = name;
+    document.getElementById('lga-section').classList.add('visible');
+    document.getElementById('lga-search').value = '';
+    document.getElementById('clear-btn').classList.remove('visible');
+    renderLGAs('');
+  }
+
+  function renderLGAs(q) {
+    if (!selectedState) return;
+    const stateLGAs = allLGAs.filter(l => l.state_code === selectedState.code);
+    const filtered = q ? stateLGAs.filter(l => l.name.toLowerCase().includes(q)) : stateLGAs;
+    document.getElementById('lga-count').textContent = q ? `${filtered.length} results` : `${filtered.length} LGAs in ${selectedState.name}`;
+    if (!filtered.length) {
+      document.getElementById('lga-list').innerHTML = `<div class="state-box">No LGAs found</div>`;
+      return;
     }
-
-    function selectState(code, name) {
-        selectedState = { code, name };
-
-        // Update grid selection
-        document.querySelectorAll('.state-btn').forEach(btn => btn.classList.remove('selected'));
-        event.currentTarget.classList.add('selected');
-
-        // Show state code bar
-        document.getElementById('selected-state-name').textContent = name;
-        document.getElementById('selected-state-code').textContent = code;
-        document.getElementById('state-code-bar').classList.add('visible');
-
-        // Update steps
-        document.getElementById('step1').classList.remove('active');
-        document.getElementById('step1').classList.add('done');
-        document.getElementById('step2').classList.add('active');
-
-        // Show LGA section
-        document.getElementById('lga-section-title').textContent = name;
-        document.getElementById('lga-section').classList.add('visible');
-        document.getElementById('lga-search').value = '';
-        document.getElementById('clear-btn').classList.remove('visible');
-        renderLGAs('');
-    }
-
-    function renderLGAs(q) {
-        if (!selectedState) return;
-        const stateLGAs = allLGAs.filter(l => l.state_code === selectedState.code);
-        const filtered = q ? stateLGAs.filter(l => l.name.toLowerCase().includes(q)) : stateLGAs;
-
-        document.getElementById('lga-count').textContent = q
-            ? `${filtered.length} result${filtered.length !== 1 ? 's' : ''} for "${q}"`
-            : `${filtered.length} LGA${filtered.length !== 1 ? 's' : ''} in ${selectedState.name}`;
-
-        if (!filtered.length) {
-            document.getElementById('lga-list').innerHTML = `<div class="state-box"><div class="state-icon empty"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#555d6b" stroke-width="1.4"/><path d="M5 8h6" stroke="#555d6b" stroke-width="1.4" stroke-linecap="round"/></svg></div><p class="state-title">No LGAs found</p></div>`;
-            return;
-        }
-
-        document.getElementById('lga-list').innerHTML = filtered.map(l => {
-            const name = q ? l.name.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi'), '<em>$1</em>') : l.name;
-            return `<div class="lga-row">
+    document.getElementById('lga-list').innerHTML = filtered.map(l => {
+      const name = q ? l.name.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi'), '<em>$1</em>') : l.name;
+      return `<div class="lga-row">
         <span class="lga-code">${l.code}</span>
         <span class="lga-name">${name}</span>
-        <button class="copy-btn" onclick="copyLGACode('${l.code}', this)">
-          <svg width="10" height="10" viewBox="0 0 11 11" fill="none"><rect x="3.5" y="3.5" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 7.5V1.5h6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Copy
-        </button>
+        <button class="copy-btn" onclick="copyLGACode('${l.code}', this)">Copy</button>
       </div>`;
-        }).join('');
-    }
+    }).join('');
+  }
 
-    function onLGASearch() {
-        const val = document.getElementById('lga-search').value;
-        document.getElementById('clear-btn').classList.toggle('visible', val.length > 0);
-        renderLGAs(val.trim().toLowerCase());
-    }
+  function onLGASearch() {
+    const val = document.getElementById('lga-search').value;
+    document.getElementById('clear-btn').classList.toggle('visible', val.length > 0);
+    renderLGAs(val.trim().toLowerCase());
+  }
 
-    function clearLGASearch() {
-        document.getElementById('lga-search').value = '';
-        document.getElementById('clear-btn').classList.remove('visible');
-        renderLGAs('');
-    }
+  function clearLGASearch() {
+    document.getElementById('lga-search').value = '';
+    onLGASearch();
+  }
 
-    function copyStateCode() {
-        const code = selectedState ? selectedState.code : '';
-        navigator.clipboard.writeText(code).then(() => {
-            const btn = document.getElementById('copy-state-btn');
-            btn.textContent = '✓ Copied!';
-            btn.classList.add('copied');
-            // Mark step 2 done, activate step 3
-            document.getElementById('step2').classList.remove('active');
-            document.getElementById('step2').classList.add('done');
-            document.getElementById('step3').classList.add('active');
-            setTimeout(() => { btn.textContent = 'Copy State Code'; btn.classList.remove('copied'); }, 2000);
-        });
-    }
+  function copyStateCode() {
+    const code = selectedState ? selectedState.code : '';
+    navigator.clipboard.writeText(code).then(() => {
+      const btn = document.getElementById('copy-state-btn');
+      btn.textContent = '✓ Copied!';
+      btn.classList.add('copied');
+      document.getElementById('step2').classList.remove('active');
+      document.getElementById('step2').classList.add('done');
+      document.getElementById('step3').classList.add('active');
+      setTimeout(() => { btn.textContent = 'Copy State Code'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
 
-    function copyLGACode(code, btn) {
-        navigator.clipboard.writeText(code).then(() => {
-            btn.innerHTML = `<svg width="10" height="10" viewBox="0 0 11 11" fill="none"><path d="M2 5.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Copied`;
-            btn.classList.add('copied');
-            setTimeout(() => {
-                btn.innerHTML = `<svg width="10" height="10" viewBox="0 0 11 11" fill="none"><rect x="3.5" y="3.5" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 7.5V1.5h6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg> Copy`;
-                btn.classList.remove('copied');
-            }, 2000);
-        });
-    }
+  function copyLGACode(code, btn) {
+    navigator.clipboard.writeText(code).then(() => {
+      btn.textContent = '✓ Copied';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
 
-    loadData();
+  loadData();
 </script>
 </body>
 </html>
