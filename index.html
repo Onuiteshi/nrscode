@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NRS Code Lookup — FIRS E-Invoicing</title>
+<title>NRS Code Lookup — NRS E-Invoicing</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -316,18 +316,17 @@
       <span class="sq-4"></span>
     </div>
     <div class="logo-text">
-      <h1>HSN/Service Code Lookup</h1>
-      <p>Powered by Zoho Books & NRS</p>
+      <h1>NRS HSN/Service Code Lookup</h1>
+      <p>NRS e-Invoice Reference</p>
     </div>
   </div>
-  <span class="header-badge">FIRS Compliant</span>
 </header>
 
 <main>
   <div class="tab-group" role="tablist">
     <button class="tab-btn active" onclick="switchTab('hs')" id="tab-hs">
       <span class="tab-dot"></span>
-      HS Codes
+      HSN Codes
       <span class="tab-count" id="hs-count">—</span>
     </button>
     <button class="tab-btn" onclick="switchTab('svc')" id="tab-svc">
@@ -348,19 +347,17 @@
 
   <div id="results" class="results-container">
     <div style="padding: 40px; text-align: center; color: var(--text-muted);">
-      Loading data from FIRS resources...
+      Loading data from NRS resources...
     </div>
   </div>
 
   <p class="footer-note">
     Select <strong>HS Codes</strong> for physical items or <strong>Service Codes</strong> for labor and professional services.<br>
-    Integration maintained by <strong>NRS Developer Hub</strong>.
+    Integration maintained by <strong>Doftwerks West Africa</strong>.
   </p>
 </main>
 
 <script>
-  /* JavaScript logic remains exactly as you had it, 
-     as it already handles the data flow perfectly. */
   let hsData = [];
   let svcData = [];
   let activeTab = 'hs';
